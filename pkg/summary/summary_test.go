@@ -24,10 +24,11 @@ import (
 
 func TestRun(t *testing.T) {
 	kubeClientVPA := kube.GetMockVPAClient()
+	kubeClient := kube.GetMockClient()
 
 	var summary Summary
 
-	got, err := Run(kubeClientVPA, utils.VpaLabels, "true")
+	got, err := Run(kubeClient, kubeClientVPA, utils.VpaLabels, "true")
 	assert.NoError(t, err)
 
 	assert.EqualValues(t, got, summary)

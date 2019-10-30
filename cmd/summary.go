@@ -42,8 +42,9 @@ var summaryCmd = &cobra.Command{
 	Long:  `Gather all the vpa data in a namespace and generaate a summary of the recommendations.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		kubeClientVPA := kube.GetVPAInstance()
+		kubeClient := kube.GetInstance()
 
-		data, _ := summary.Run(kubeClientVPA, utils.VpaLabels, excludeContainers)
+		data, _ := summary.Run(kubeClient, kubeClientVPA, utils.VpaLabels, excludeContainers)
 		summaryJSON, err := json.Marshal(data)
 		if err != nil {
 			klog.Fatalf("Error marshalling JSON: %v", err)

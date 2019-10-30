@@ -164,8 +164,9 @@ func GetRouter(port int, basePath string, vpaLabels map[string]string, excludeCo
 		}
 
 		kubeClientVPA := kube.GetVPAInstance()
+		kubeClient := kube.GetInstance()
 
-		data, err := summary.Run(kubeClientVPA, vpaLabels, excludeContainers)
+		data, err := summary.Run(kubeClient, kubeClientVPA, vpaLabels, excludeContainers)
 		if err != nil {
 			klog.Errorf("Error getting data: %v", err)
 			http.Error(w, "Error running summary.", 500)

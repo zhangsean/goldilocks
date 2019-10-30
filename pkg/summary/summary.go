@@ -50,7 +50,7 @@ type Summary struct {
 }
 
 // Run creates a summary of the vpa info for all namespaces.
-func Run(kubeClientVPA *kube.VPAClientInstance, vpaLabels map[string]string, excludeContainers string) (Summary, error) {
+func Run(kubeClient *kube.ClientInstance, kubeClientVPA *kube.VPAClientInstance, vpaLabels map[string]string, excludeContainers string) (Summary, error) {
 	klog.V(3).Infof("Looking for VPAs with labels: %v", vpaLabels)
 
 	vpaListOptions := metav1.ListOptions{
@@ -63,17 +63,15 @@ func Run(kubeClientVPA *kube.VPAClientInstance, vpaLabels map[string]string, exc
 	}
 	klog.V(10).Infof("Found vpas: %v", vpas)
 
-	summary, _ := constructSummary(vpas, excludeContainers)
+	summary, _ := constructSummary(kubeClient, vpas, excludeContainers)
 	return summary, nil
 }
 
-func constructSummary(vpas *v1beta2.VerticalPodAutoscalerList, excludeContainers string) (Summary, error) {
+func constructSummary(kubeClient *kube.ClientInstance, vpas *v1beta2.VerticalPodAutoscalerList, excludeContainers string) (Summary, error) {
 	var summary Summary
 	if len(vpas.Items) <= 0 {
 		return summary, nil
 	}
-
-	kubeClient := kube.GetInstance()
 
 	containerExclusions := strings.Split(excludeContainers, ",")
 
